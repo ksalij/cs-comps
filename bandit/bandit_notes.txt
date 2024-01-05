@@ -1,0 +1,146 @@
+Kiri Salij
+Overthewire Bandit Game Notes
+January 5 2024
+
+Bandit 0 Notes
+ssh
+-l <login_name>
+-p <port>
+destination
+
+final cmd> ssh -l bandit0 -p 2220 bandit.labs.overthewire.org
+
+Bandit 0->1
+> cat readme
+NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL
+
+Bandit 1->2
+# googled dashed filename
+> cat ./-
+rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+
+Bandit 2->3
+# googled spaces in filename
+> cat "spaces in this filename"
+aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+
+Bandit 3->4
+> ls
+inhere
+> cd inhere
+> ls
+> ls -lah
+total 12K
+drwxr-xr-x 2 root    root    4.0K Oct  5 06:19 .
+drwxr-xr-x 3 root    root    4.0K Oct  5 06:19 ..
+-rw-r----- 1 bandit4 bandit3   33 Oct  5 06:19 .hidden
+> cat .hidden
+2EW7BBsr6aMMoJ2HjW067dm8EgX26xNe
+
+Bandit 4->5
+> file ./-file0x
+./-file0x: data
+but if the file is human readable instead of data it will say ASCII text (-file07)
+> cat ./-file07
+lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
+
+# can use file command to figure out the file type
+
+Bandit 5->6
+> find -size 1033c 
+./maybehere07/.file2
+
+# the c denotes that we are looking for files with 1033 bytes (c = bytes)
+
+> cat ./maybehere07/.file2
+P4L4vucdmLnm8I7Vl7jG1ApGSfjYKqJU
+
+Bandit 6->7
+# navigated to root (cd .. cd..)
+# googled filter out permission denied find
+
+> find -size 33c -user bandit7 -group bandit6 2>/dev/null
+./var/lib/dpkg/info/bandit7.password
+
+# the 2>/dev/null redirects stderr to /dev/null which is a blackhole where nothing is written to it (aka I'm trashing all the error messages)
+
+> cat /var/lib/dpkg/info/bandit7.password
+z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+
+Bandit 7->8
+> grep "millionth" < data.txt
+millionth       TESKZC0XvTetK0S9xNwm25STk5iWrBvP
+
+Bandit 8->9
+> sort data.txt | uniq -u
+EN632PlfYiZbn3PhVK3XOGSlNInNE00t
+
+# sorts the file to put all the repeating lines together, then uniq -u prints only the uniq lines (-u flag does the omitting, but uniq needs the repeating lines to be adjacent which is what sort does)
+
+Bandit 9->10
+> strings data.txt | grep "===="
+x]T========== theG)"
+========== passwordk^
+========== is
+========== G7w8LIi6J3kTb8A7j9LgrywtEUlyyp6s
+
+Bandit 10->11
+> base64 -d data.txt
+The password is 6zPeziLdR2RKNdNYFNb6nVCKzphlXHBM
+
+# -d flag decodes rather than the default which is to encode
+
+Bandit 11->12
+# I got stuck :( so I googled command line caesar cipher which gave me the following command which makes so much sense. I was getting confused about being able to do uppercase and lowercase at the same time, but you are able to just concatenate the two together. 
+
+> tr '[N-ZA-Mn-za-m]' '[A-Za-z]' < data.txt 
+The password is JVNBBFSmZwKKOP0XbFXOoW8chDz5yVRv
+
+Bandit 12->13
+# basically all I'm doing is checking the file type of the uncompressed file, changing the file extension to match, and then uncompressing it one more level.
+Rinse and repeat 8 times. A couple notes: -x flag on the tar command and -d flag on gzip denote extraction/decompression. Also I omitted my ls commands to find the name of the outputted file. 
+
+> xxd -r data.txt binary
+> file binary
+binary: gzip compressed data, was "data2.bin", last modified: Thu Oct  5 06:19:20 2023, max compression, from Unix, original size modulo 2^32 573
+> mv binary binary.gz
+> gzip -d binary.gz
+> file binary
+binary: bzip2 compressed data, block size = 900k
+> mv binary binary.bz2
+> bunzip2 binary.bz2
+> file binary
+binary: gzip compressed data, was "data4.bin", last modified: Thu Oct  5 06:19:20 2023, max compression, from Unix, original size modulo 2^32 20480
+> mv binary binary.gz
+> gzip -d binary.gz
+> file binary
+binary: POSIX tar archive (GNU)
+> mv binary binary.tar
+> tar -x -f binary.tar
+> file data5.bin
+data5.bin: POSIX tar archive (GNU)
+> tar -x -f data5.bin
+> file data6.bin
+data6.bin: bzip2 compressed data, block size = 900k
+> bunzip2 data6.bin
+> file data6.bin.out
+data6.bin.out: POSIX tar archive (GNU)
+> tar -x -f data6.bin.out
+> file data8.bin
+data8.bin: gzip compressed data, was "data9.bin", last modified: Thu Oct  5 06:19:20 2023, max compression, from Unix, original size modulo 2^32 49
+> mv data8.bin data8.gz
+> gzip -d data8.gz
+> file data8
+data8: ASCII text
+> cat data8
+The password is wbWdlBxEir4CaE8LaPhauuOo6pwRmrDw
+
+Bandit 13->14
+> ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
+
+Bandit 14->15
+> cat /etc/bandit_pass/bandit14
+fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
+
+# I have the password for bandit14 but I can't figure out what it means to submit "the password of the current level to port 30000 on localhost". I have the password of the current level (above), but how do I submit it to port 30000 on localhost? The most promising command that I've tried was > ssh localhost -p 30000. But it said the connection was closed at port 30000.
+
