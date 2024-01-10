@@ -1,6 +1,5 @@
 Kiri Salij
 Overthewire Bandit Game Notes
-January 5 2024
 
 Bandit 0 Notes
 ssh
@@ -45,6 +44,7 @@ but if the file is human readable instead of data it will say ASCII text (-file0
 lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
 
 # can use file command to figure out the file type
+# I have since learned that to do everything at once I could do > file ./*
 
 Bandit 5->6
 > find -size 1033c 
@@ -142,5 +142,13 @@ Bandit 14->15
 > cat /etc/bandit_pass/bandit14
 fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
 
-# I have the password for bandit14 but I can't figure out what it means to submit "the password of the current level to port 30000 on localhost". I have the password of the current level (above), but how do I submit it to port 30000 on localhost? The most promising command that I've tried was > ssh localhost -p 30000. But it said the connection was closed at port 30000.
+# nc host port
+1. make a TCP connenction to the remote server host/port
+2. wait for stdin/keyboard input, send it along to server
+3. print anything the server sends back 
 
+> cat /etc/bandit_pass/bandit14 | nc localhost 30000
+Correct!
+jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt
+
+Bandit 15->16

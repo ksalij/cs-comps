@@ -1,0 +1,43 @@
+Kiri Salij
+OverTheWire Natas Game Notes
+
+Not sure if I'm correctly labeling the levels, but this is the way that makes sense to me. 
+
+Natas 0->1
+password found in an HTML comment by viewing the page source
+g9D9cREhslqBKtcA2uocGHPfMZVzeFK6 
+
+Natas 1->2
+I put view-source: in front of the url so that I could still view the page source without right clicking
+h4ubbcXrWqsTo7GGnnUMLppXbOogfBZ7 
+
+Natas 2->3
+1. looked at the page source
+2. saw a link to an image, then opened up the image files/pixel.png
+3. then checked if i could go to the url http://natas2.natas.labs.overthewire.org/files/
+4. on that page there was a link to users.txt which I opened to find the password
+G6ctbMJ5Nb4cbFwhpMPSvxGHhQ7I6W8Q
+
+Natas 3->4
+I truly had no idea where to even start for this one, so I googled it. I started reading the beginning of an explaination so I'd have somewhere to start. The walkthrough I looked at pointed me in the direction of robots.txt. Once I got to robots.txt, I saw the directory /s3cr3t/ where I found users.txt which gave me the password. 
+tKOcJIbzM4lTs8hbCmzn5Zr4434fGZQm
+
+Natas 4->5
+Again not really sure where to start. I website I looked at mentioned that HTTP requests have a Referer header that I can change if I have a way of intercepting the request. So using Burpsuite I intercepted the request and changed the Referer field to http://natas5.natas.labs.overthewire.org/.
+Z0NsrtIkJoKALBCLi5eqFfcRN82Au2oD
+
+Natas 5->6
+Still in Burpsuite I loaded in the natas5 page. I refreshed the page and during the interception I saw a Cookie called loggedin which was set to 0. I set it to 1 and I was in! I could have also just edited the cookie in the browser instead of the HTTP request as well. 
+fOIvE0MDtPTgRhqmmvvAOt2EfXR6uQgR
+
+Natas 6->7
+I hit the view sourcecode link which showed me the html source code. There seemed to be some php script that is checking whether what the user entered in the box is equal to the secret. I saw it said include "includes/secret.inc"; so I went to that url and low and behold there was the secret. I pasted it into the box on the original webpage and got the password. 
+jmxSiH3SP6Sonf8dv66ng8v1cIEdjXWr
+
+Natas 7->8
+Looking at the page source there is a hint saying <!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->. When looking at the home and about pages, I saw that the page= in the url changed appropriately thus I tried: http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8 which successfully gave me the password.
+a6bZCNYwdKqN5cGP11ZdtPg0iImQQhAB
+
+Natas 8->9
+More php code in the page source! This time the inputted secret is encoded in base64, reversed, then put into hexidecimal then checked against an encodedSecret string. I just took the given string $encodedSecret = "3d3d516343746d4d6d6c315669563362" and put it through some online decoders to undo the functions to get the secret one must input. I got oubWYf2kBq as the secret which worked!
+Sda6t0vkOPkM8YeOZkAGVhFoaplvlJFd
