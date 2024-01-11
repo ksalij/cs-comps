@@ -152,3 +152,32 @@ Correct!
 jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt
 
 Bandit 15->16
+$ openssl s_client -connect localhost:30001
+lots of text explaining the connection and certificates, I pasted in the password and got:
+JQttfApK4SeyHwDlI9SXGR50qclOAil1
+
+Bandit 16->17
+$ nmap -sV -p 31000-32000 localhost
+31046/tcp open  echo
+31518/tcp open  ssl/echo
+31691/tcp open  echo
+31790/tcp open  ssl/unknown
+31960/tcp open  echo
+
+Some other stuff was printed that we don't care about, we want to send the password to port 31790.
+$ openssl s_client -connect localhost:31790
+I sent the password and received an RSA private key which is in this folder titled bandit17_rsakey.private. 
+
+Bandit 17->18
+Took me absolutely forever to make it such that I could change the permissions on bandit17_rsakey.private so bandit.labs.overthewire.org would accept the key, but we got there in the end. 
+$ ssh -i bandit17_rsakey.private bandit17@bandit.labs.overthewire.org -p 2220
+
+$ diff passwords.new passwords.old
+42c42
+< hga5tuuCLF6fFzUpnagiMN8ssu9LFrdg
+---
+> p6ggwdNHncnmCNxuAt0KtKVq185ZU7AW
+
+The password is the top one because it is in passwords.new
+
+Bandit 18->19
