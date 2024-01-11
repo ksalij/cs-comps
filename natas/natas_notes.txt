@@ -41,3 +41,17 @@ a6bZCNYwdKqN5cGP11ZdtPg0iImQQhAB
 Natas 8->9
 More php code in the page source! This time the inputted secret is encoded in base64, reversed, then put into hexidecimal then checked against an encodedSecret string. I just took the given string $encodedSecret = "3d3d516343746d4d6d6c315669563362" and put it through some online decoders to undo the functions to get the secret one must input. I got oubWYf2kBq as the secret which worked!
 Sda6t0vkOPkM8YeOZkAGVhFoaplvlJFd
+
+Natas 9->10
+Looking at the source code, the php takes our input and puts it in a function which does the command "grep -i $key dictionary.txt". So I typed in "; cat /etc/natas_webpass/natas10;". The semicolons ended the grep command so I could cat the file containing the password. 
+D44EcsFkLxPIkAAKLosx8z3hxX1Z4MCE
+
+Natas 10->11
+Not sure where to start since I couldn't use semi-colon like last time so I looked it up. It makes so much sense when you see the solution, but they just used grep to search for the password. The .* made it so we were searching for everything and the # commented out the dictionary.txt after the command. 
+
+.* /etc/natas_webpass/natas11 #
+
+This was among the results:
+/etc/natas_webpass/natas11:1KFqoJXi6hRaPluAmk8ESDW4fSysRoIg
+
+Natas 11->12
